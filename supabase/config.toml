@@ -1,0 +1,93 @@
+# Gateway JWT verification is intentionally disabled per Supabase's current
+# guidance for backend/admin-triggered functions. Authentication is enforced
+# in-function via requireInvokeSecret (FUNCTION_INVOKE_SECRET). Do NOT remove
+# the in-function check — it is the security perimeter for these functions,
+# which incur paid LLM API costs.
+[functions.generate-responses]
+verify_jwt = false
+
+# ADMIN-TIER — invoked server-to-server by auto-build-union with
+# FUNCTION_INVOKE_SECRET as the bearer (an opaque secret, NOT a JWT), so the
+# gateway must NOT verify it as a JWT. Auth is enforced in-function via
+# requireInvokeSecret. (Was missing here, which defaulted a CLI deploy to
+# verify_jwt=true and 401'd the orchestrator's union-build call at the gateway.)
+[functions.build-action-union]
+verify_jwt = false
+
+[functions.score-responses]
+verify_jwt = false
+
+# CONSUMER-TIER function — called from the consultant browser.
+# Auth model: anon-key + RLS + in-function abuse-bounds (rate limit, input cap,
+# cheap model, account spend cap). Does NOT use FUNCTION_INVOKE_SECRET — that
+# admin-tier secret must NEVER reach the browser. Distinct security class from
+# generate-responses/score-responses.
+[functions.parse-actions]
+verify_jwt = false
+
+# CONSUMER-TIER function — called from the consultant browser to PATCH Phase 2
+# ratings. Auth model: anon-key + in-function abuse-bounds (rate limit, input
+# cap, strict validation, pre-check). Does NOT use FUNCTION_INVOKE_SECRET —
+# that admin-tier secret must NEVER reach the browser. The actual DB write
+# uses the SERVICE ROLE inside the function, bypassing the anon UPDATE GRANT
+# we deliberately did NOT add to submissions (anon stays INSERT+SELECT only).
+[functions.submit-phase2]
+verify_jwt = false
+
+# CONSUMER-TIER function — called from the architect browser at submit time
+# to classify case difficulty before the row is written to architect_cases.
+# Same auth model as parse-actions: anon-key + rate limit + input cap +
+# spend cap. Replaces a prior browser-side direct call to api.anthropic.com
+# that exposed ANTHROPIC_API_KEY as a client-side JS constant.
+[functions.score-case-difficulty]
+verify_jwt = false
+
+# CONSUMER-TIER function — called from the architect browser at submit time
+# to draft ideal-standard standard-of-care steps with cited references. The
+# architect reviews and verifies each citation before the case is saved.
+# Same auth model as parse-actions, with a tighter rate limit (10/min)
+# because this call uses 1500 max_tokens. Returns generator_prompt_version
+# (SHA-256 of system prompt) so the browser can record it in each kept
+# step's provenance/verification_log.
+[functions.generate-standard-of-care-steps]
+verify_jwt = false
+
+# CONSUMER-TIER function — called from both consultant + architect browsers
+# (p1Dictate / archDictate) to transcribe captured audio via Groq Whisper.
+# Same auth model as parse-actions. Whisper anti-hallucination params
+# (whisper-large-v3, temperature=0, language=en) are set server-side so
+# the browser cannot weaken them. Replaces a prior browser-side direct
+# call to api.groq.com that exposed GROQ_API_KEY.
+[functions.transcribe-audio]
+verify_jwt = false
+
+# ADMIN-TIER function — deletes a single architect_cases row by id, using
+# the service role to bypass the post-RLS-lockdown anon DELETE block on
+# architect_cases. Requires FUNCTION_INVOKE_SECRET via Authorization
+# Bearer; the secret must NEVER reach the browser. The browser admin UI
+# shows a curl helper for the admin to run from their terminal.
+[functions.admin-delete-case]
+verify_jwt = false
+
+# ORCHESTRATOR — browser-callable (architect submit / admin edit / manual
+# "Build / Retry" button). verify_jwt=false; it accepts the anon key like the
+# other consumer-tier functions but ALSO reads FUNCTION_INVOKE_SECRET from its
+# own env to call the admin-tier generate-responses + build-action-union. The
+# secret stays server-side — never shipped to the browser.
+[functions.auto-build-union]
+verify_jwt = false
+
+# CONSUMER-TIER — browser-callable (admin DATA tab). Returns per-output
+# generation PROVENANCE only (no response_text, no row id), so it cannot
+# de-mask outputs. No invoke-secret gate (the data is already-stored metadata
+# the admin must see); verify_jwt off — accepts the anon key like the other
+# consumer functions.
+[functions.admin-case-outputs]
+verify_jwt = false
+
+# CONSUMER-TIER — browser-callable. Returns each model's verbatim output for
+# Phase 2 highlight-and-classify, with provider identity stripped + order
+# shuffled server-side. anon has no SELECT on model_responses, so this is the
+# only path the browser has to the outputs (and it never sees identity).
+[functions.phase2-model-outputs]
+verify_jwt = false

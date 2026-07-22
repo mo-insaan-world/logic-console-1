@@ -1,0 +1,9 @@
+node_modules/
+submissions.json
+.env
+validate-*.log
+supabase/.temp/
+supabase/.branches/
+.DS_Store
+**/.DS_Store
+reviewer-build/

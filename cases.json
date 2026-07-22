@@ -1,0 +1,86 @@
+[
+  {
+    "id": "SOW-2024-1562",
+    "session_id": "SYN-SOW-2024-1562-9F1Q",
+    "difficulty_rating": "PROTOCOL",
+    "difficulty_assessment": {
+      "difficulty_rating": "PROTOCOL",
+      "confidence": "HIGH",
+      "rationale": "TEVAR for stable Grade III BTAI with full resources is explicitly recommended in AAST, SVS, and EAST guidelines \u2014 standard protocol is directly executable with no constraint-driven deviation required.",
+      "failing_constraints": [],
+      "expected_disagreement": "10-20%"
+    },
+    "timestamp": "14:52 UTC",
+    "vitals": {
+      "hr": 95,
+      "hr_min": 88,
+      "hr_max": 102,
+      "hr_crit": false,
+      "bp_s": 102,
+      "bp_d": 68,
+      "bp_min": 96,
+      "bp_max": 108,
+      "bp_crit": false,
+      "gcs": 15,
+      "spo2": 97,
+      "rr": 18,
+      "rr_crit": false,
+      "abg": {
+        "ph": 7.36,
+        "po2": 145,
+        "pco2": 38,
+        "lactate": 2.1,
+        "be": -2
+      }
+    },
+    "scenario": {
+      "history": "45M. High-speed MVA, N14 highway \u2014 unrestrained driver, head-on collision with deceleration mechanism. Brought by EMS \u2014 28 minutes since injury. GCS 15. No prior history. Haemodynamically stable throughout transport. CT aortogram obtained on arrival.",
+      "examination": "Haemodynamically stable. Mildly hypertensive on arrival. Contained pseudoaneurysm at aortic isthmus (Zone III) on CT aortogram \u2014 18mm maximal diameter. No haemothorax. No pneumothorax. Bilateral femoral pulses intact and symmetric. Full neurological exam intact. AAST Grade III blunt thoracic aortic injury.",
+      "working_diagnosis": "Blunt thoracic aortic injury (BTAI) \u2014 contained pseudoaneurysm at isthmus. Haemodynamically stable window present. Full endovascular resources available. IR team on site. Optimal candidate for TEVAR.",
+      "facility_setting": "tertiary",
+      "transfer_time": "under_30_min"
+    },
+    "ai_steps": [
+      "Anti-impulse therapy immediately \u2014 IV esmolol targeting HR below 60, SBP below 120 mmHg",
+      "TEVAR \u2014 activate hybrid theatre and IR team, size stent graft from CT measurements (zone 2-3 landing)",
+      "Crossmatch 4 units pRBC, cell saver in circuit \u2014 antihypertensive infusion as bridge to endovascular suite",
+      "Post-op ICU \u2014 spinal cord ischaemia monitoring q1h, blood pressure protocol targeting SBP 100-120, graft surveillance"
+    ],
+    "auto_flags": [],
+    "pathways": [
+      {
+        "id": "definitive_treatment",
+        "question": "What is your definitive treatment strategy?",
+        "sublabel": "Full resources available \u2014 IR team on site, theatre ready, blood bank stocked. Justify your approach given a stable Grade III BTAI with contained pseudoaneurysm.",
+        "options": [
+          "TEVAR \u2014 Endovascular Stent Graft (IR team on site)",
+          "Open Thoracic Repair \u2014 Left Thoracotomy and Direct Aortic Repair",
+          "Medical Management \u2014 Anti-impulse Therapy, Delayed or No Intervention"
+        ]
+      }
+    ],
+    "constraints": {
+      "theatre": 0,
+      "blood": 0,
+      "cell_saver": 0,
+      "vascular_shunt": 0,
+      "endovascular": 0,
+      "sutures": 0,
+      "anaesthetist": 0,
+      "vascular_surgeon": 0,
+      "icu_ventilator": 0,
+      "icu_bed": 0,
+      "imaging": 0,
+      "power": 0
+    },
+    "constraints_detail": {
+      "sutures": "Prolene 3-0/4-0, PDS, Vicryl \u2014 full stock"
+    },
+    "static_textbook_protocol": [
+      "Haemodynamic stabilisation \u2014 heart rate and blood pressure control with esmolol or labetalol targeting HR less than 60 and SBP less than 120mmHg to reduce aortic wall stress.",
+      "CT angiography of chest with aortic protocol to classify injury grade (AAST Grade I-IV) and define anatomy for operative planning.",
+      "Endovascular repair (TEVAR) as first-line treatment for Grade II-IV injuries in anatomically suitable patients \u2014 activate interventional radiology and vascular surgery teams.",
+      "ICU admission postoperatively for haemodynamic monitoring, neurological assessment for spinal cord ischaemia, and renal function monitoring."
+    ]
+  }
+]

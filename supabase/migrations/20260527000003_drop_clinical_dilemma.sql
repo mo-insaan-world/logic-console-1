@@ -1,0 +1,31 @@
+-- Drop the clinical_dilemma column from architect_cases.
+--
+-- Methodology rationale: clinical_dilemma was a free-text editorialization
+-- of "the question this case is testing," written by the case-authoring
+-- architect. It was sent into the user-message payload of both the
+-- score-case-difficulty and generate-standard-of-care-steps Edge Functions
+-- (i.e. it conditioned LLM-produced difficulty ratings and LLM-drafted
+-- standard-of-care steps).
+--
+-- The architect form already collects a complete clinical picture without
+-- it: case title, history, examination findings, working diagnosis, full
+-- vitals + ABG, all 12 constraints with severity levels, the architect's
+-- own ground-truth action and reasoning trace, and the decision mode
+-- (definitive / damage / transfer). Difficulty is derivable from the gap
+-- between standard approach and what the architect actually did under the
+-- constraints — i.e. from the STRUCTURED clinical data, not from the
+-- architect's free-text framing.
+--
+-- Removing the field keeps LLM-conditioned outputs (difficulty ratings,
+-- drafted protocols) functions of clinical facts only, not of case-author
+-- editorialization. This is methodologically cleaner: pre-change and
+-- post-change difficulty ratings and drafted protocols are produced under
+-- different input shapes and SHOULD NOT BE MIXED in analysis. Treat the
+-- cutover as a benchmark-version boundary.
+--
+-- Pre-drop row count: total_rows=0, rows_with_non_null_dilemma=0 (verified
+-- via SELECT immediately before this migration was authored). No live
+-- production data is being discarded.
+
+ALTER TABLE public.architect_cases
+  DROP COLUMN IF EXISTS clinical_dilemma;
